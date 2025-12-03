@@ -31,6 +31,8 @@ def gen_background_server_ctxmanager(
                 response = conn.getresponse()
                 if response is not None:
                     print(f"health check for {cmd=} got a response")
+                    conn.close()
+                    time.sleep(1)  # Give server time to stabilize
                     yield process
                     break
             except ConnectionRefusedError:
