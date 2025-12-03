@@ -18,8 +18,7 @@ docker build -t hello-world-lambda .
 sam build
 
 # Run all tests
-source .venv/bin/activate
-pytest tests/test_functional.py -v
+uv run pytest tests/test_functional.py -v
 ```
 
 The tests spin up:
