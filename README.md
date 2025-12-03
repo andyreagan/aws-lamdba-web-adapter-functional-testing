@@ -8,7 +8,7 @@ The key insight: you can test your Lambda-deployed web app locally using `sam lo
 ## Setup
 
 ```bash
-uv venv && uv pip install -e ".[dev]"
+uv sync
 ```
 
 ## Running Tests
