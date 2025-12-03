@@ -25,7 +25,7 @@ def gen_background_server_ctxmanager(
         # give it 1 second right off the bat
         time.sleep(1)
         while retries > 0:
-            conn = HTTPConnection(f"localhost:{port}")
+            conn = HTTPConnection(f"localhost:{port}", timeout=10)
             try:
                 conn.request("HEAD", healthendpoint)
                 response = conn.getresponse()
@@ -35,8 +35,12 @@ def gen_background_server_ctxmanager(
                     time.sleep(1)  # Give server time to stabilize
                     yield process
                     break
-            except ConnectionRefusedError:
-                print(f"failed health check for {cmd=}, waiting {wait_seconds=}")
+            except (ConnectionRefusedError, ConnectionResetError, OSError) as e:
+                # ConnectionRefusedError: server not listening yet
+                # ConnectionResetError: server accepted connection but reset it
+                # OSError: other network errors (e.g., connection aborted)
+                print(f"failed health check for {cmd=} ({e!r}), waiting {wait_seconds=}")
+                conn.close()
                 time.sleep(wait_seconds)
                 retries -= 1
 
