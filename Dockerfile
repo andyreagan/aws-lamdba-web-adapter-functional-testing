@@ -9,13 +9,13 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 WORKDIR /var/task
 
 # Copy dependency files
-COPY pyproject.toml .
+COPY pyproject.toml uv.lock ./
 
-# Install dependencies using uv
-RUN uv pip install --system --no-cache .
-
-# Copy application code
+# Copy application code first (needed for uv sync to install project)
 COPY app/ ./app/
+
+# Install dependencies using uv with locked versions
+RUN uv sync --frozen --no-dev
 
 # Port for the application - Lambda Web Adapter will forward to this
 ENV PORT=8000
@@ -23,5 +23,5 @@ ENV PORT=8000
 # For local Docker runs (not Lambda), expose the port
 EXPOSE 8000
 
-# Run the FastAPI app with uvicorn
-CMD exec uvicorn --host 0.0.0.0 --port=$PORT app.main:app
+# Run the FastAPI app with uvicorn using the venv
+CMD uv run uvicorn --host 0.0.0.0 --port=$PORT app.main:app
