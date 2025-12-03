@@ -27,7 +27,7 @@ class TestDockerContainer:
             cmd=docker_run_cmd,
             port=DOCKER_PORT,
             healthendpoint="/health",
-            wait_seconds=2,
+            wait_seconds=5,
         )
         with server_ctx() as process:
             yield process
