@@ -1,7 +1,7 @@
 import httpx
 import pytest
 
-from conftest import gen_background_server_ctxmanager
+from tests.conftest import gen_background_server_ctxmanager
 
 # Docker container port
 DOCKER_PORT = 8000
